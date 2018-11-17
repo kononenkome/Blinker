@@ -80,11 +80,7 @@ class Blinker : public Ticker {
       series = _series * 2;
       count = 0;
       series_period = _series_period;
-#ifdef DEBUGPRINT      
-      if (repeat * series_ms >= milliseconds) {
-        DEBUG_PRINT("WARNING: blinker series (" + String(series * series_period) + ") longer than period " + milliseconds);
-      }
-#endif      
+
       attach_ms<Blinker*>(milliseconds, series_internal, this);
     }
 };
