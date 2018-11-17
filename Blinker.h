@@ -16,6 +16,7 @@ class Blinker : public Ticker {
     uint32_t series; 
     uint32_t series_period;
     Ticker series_ticker;
+    bool reverse; //WeMos use LOW for ON builin led. reserse = true say that ON is LOW.
 
     void setPin(uint32_t level) {
       detach_all();
@@ -44,10 +45,11 @@ class Blinker : public Ticker {
   public:
     Blinker() {
       pin = 0;
+      reverse = false;
       detach_all(); 
     }
 
-    void setup(uint32_t _pin = LED_BUILTIN)  { 
+    void setup(bool _reverse = false, uint32_t _pin = LED_BUILTIN)  { 
       pin = _pin;
       pinMode(pin, OUTPUT); 
     };
@@ -56,10 +58,10 @@ class Blinker : public Ticker {
       series_ticker.detach();
     }
     void on() { 
-      setPin(LOW); //on WeMos D1 mimi LED_BUILTIN light on LOW
+      setPin(reverse? LOW : HIGH); //on WeMos D1 mimi LED_BUILTIN light on LOW
     }
     void off() { 
-      setPin(HIGH); 
+      setPin(reverse ? HIGH : LOW); 
     }
     void toggle() {
       detach_all();
