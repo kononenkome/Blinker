@@ -49,8 +49,9 @@ class Blinker : public Ticker {
       detach_all(); 
     }
 
-    void setup(bool _reverse = false, uint32_t _pin = LED_BUILTIN)  { 
+    void setup(uint32_t _pin = LED_BUILTIN, bool _reverse = false)  { 
       pin = _pin;
+      reverse = _reverse;
       pinMode(pin, OUTPUT); 
     };
     void detach_all() {
@@ -58,7 +59,7 @@ class Blinker : public Ticker {
       series_ticker.detach();
     }
     void on() { 
-      setPin(reverse? LOW : HIGH); //on WeMos D1 mimi LED_BUILTIN light on LOW
+      setPin(reverse ? LOW : HIGH); //on WeMos D1 mimi LED_BUILTIN light on LOW
     }
     void off() { 
       setPin(reverse ? HIGH : LOW); 
