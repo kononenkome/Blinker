@@ -17,6 +17,7 @@ class Blinker : public Ticker {
     uint32_t series_period;
     Ticker series_ticker;
     bool reverse; //WeMos use LOW for ON builin led. reserse = true say that ON is LOW.
+    bool single; //only one blink flag
 
     void setPin(uint32_t level) {
       detach_all();
@@ -25,15 +26,20 @@ class Blinker : public Ticker {
     static void toggle_internal(Blinker* b) { 
       digitalWrite(b->pin, !digitalRead(b->pin)); 
     }
-     static void toggle_internal_series(Blinker* b) { 
+    static void toggle_internal_series(Blinker* b) { 
       DEBUG_PRINT("toggle_internal_series " + String(b->series) + " " + String(b->count));
       if (b->count < b->series) {
         DEBUG_PRINT("blink");
         toggle_internal(b); 
         b->count++;
       } else {
-        DEBUG_PRINT("detach series");        
-        b->series_ticker.detach();
+        DEBUG_PRINT("detach series");   
+        if (b->single) {
+          b->detach_all();
+          b->single = false;
+        } else {    
+          b->series_ticker.detach();
+        }
         b->count = 0;
       }
     }   
@@ -46,6 +52,7 @@ class Blinker : public Ticker {
     Blinker() {
       pin = 0;
       reverse = false;
+      single = false;
       detach_all(); 
     }
 
@@ -58,8 +65,8 @@ class Blinker : public Ticker {
       detach();
       series_ticker.detach();
     }
-    void on() { 
-      setPin(reverse ? LOW : HIGH); //on WeMos D1 mimi LED_BUILTIN light on LOW
+    void on() {  
+      setPin(reverse ? LOW : HIGH); //on WeMos D1 mini LED_BUILTIN light on LOW
     }
     void off() { 
       setPin(reverse ? HIGH : LOW); 
@@ -83,5 +90,13 @@ class Blinker : public Ticker {
       series_period = _series_period;
 
       attach_ms<Blinker*>(milliseconds, series_internal, this);
+    }
+    void blink_once(uint32_t milliseconds) {
+      detach_all();
+      series = 2;
+      count = 0;
+      single = true;
+      
+      attach_ms<Blinker*>(milliseconds, toggle_internal_series, this);
     }
 };
