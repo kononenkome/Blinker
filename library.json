@@ -4,12 +4,10 @@
   "keywords": "wifi,wi-fi,esp,esp8266,esp32,espressif8266,espressif32,nodemcu,wemos,arduino",
   "description": "Blinker for LED based on Ticker",
   "authors":
-  [
-    {
+  {
         "name": "kononenkome",
         "url": "https://github.com/kononenkome"
-    },
-  ],
+  },
   "repository":
   {
     "type": "git",
