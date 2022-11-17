@@ -18,5 +18,9 @@
   [
     "espressif8266",
     "espressif32"
-  ]
+  ],
+  "dependencies":
+  {
+    "Ticker" : "^1.0"
+  }
 }
